@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Spot
+Exec=spot
+Icon=${SNAP}/meta/gui/spot.svg
+Terminal=false
+Type=Application
+Categories=GTK;GNOME;Music;AudioVideo;
+StartupNotify=true

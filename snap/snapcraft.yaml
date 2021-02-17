@@ -1,0 +1,65 @@
+name: spot
+base: core20 # the base snap is the execution environment for this snap
+adopt-info: spot
+summary: Gtk/Rust native Spotify client for the Gnome desktop.
+description: |
+  Gtk/Rust native Spotify client for the Gnome desktop.
+
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+
+grade: stable
+confinement: strict
+
+parts:
+  spot:
+    plugin: rust
+    source: https://github.com/xou816/spot.git
+    override-pull: |
+      snapcraftctl pull
+      snapcraftctl set-version "$(git describe --tag)"
+    build-packages:
+      - build-essential
+      - pkg-config
+      - meson
+      - cargo
+      - libssl-dev
+      - libglib2.0-dev-bin
+      - libgtk-3-dev
+      - libasound2-dev
+      - libpulse-dev
+    override-build: |
+      meson target -Dbuildtype=debug -Doffline=false
+      ninja -C target
+      mkdir $SNAPCRAFT_PART_INSTALL/bin
+      mkdir -p $SNAPCRAFT_PART_INSTALL/share/spot
+      cp target/target/debug/spot $SNAPCRAFT_PART_INSTALL/bin
+      cp target/src/spot.gresource $SNAPCRAFT_PART_INSTALL/share/spot
+
+layout:
+  /usr/local/share/spot/spot.gresource:
+    symlink: $SNAP/share/spot/spot.gresource
+
+slots:
+  spot:
+    interface: dbus
+    bus: session
+    name: dev.alextren.Spot
+  spot-mpris:
+    interface: mpris
+    name: Spot
+
+apps:
+  spot:
+    command: bin/spot
+    extensions: [gnome-3-38]
+    common-id: dev.alextren.Spot
+    plugs:
+      - audio-playback
+      - network
+      - x11
+      - opengl
+      - desktop
+      - desktop-legacy
+      - password-manager-service
