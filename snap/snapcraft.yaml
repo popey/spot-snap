@@ -16,12 +16,26 @@ parts:
   spot:
     plugin: meson
     source: https://github.com/xou816/spot.git
+    #source-tag: '0.1.12'
     override-pull: |
+      set -eu
       snapcraftctl pull
-      snapcraftctl set-version "$(git describe --tag)"
+      last_committed_tag="$(git describe --tags --abbrev=0)"
+      last_committed_tag_ver="$(echo ${last_committed_tag} | sed 's/v//')"
+      last_released_tag="$(snap info $SNAPCRAFT_PROJECT_NAME | awk '$1 == "latest/beta:" { print $2 }')"
+      # If the latest tag from the upstream project has not been released to
+      # beta, build that tag instead of master.
+      if [ "${last_committed_tag_ver}" != "${last_released_tag}" ]; then
+        git fetch
+        git checkout "${last_committed_tag}"
+        cd ../src
+        git checkout "${last_committed_tag}"
+      fi
+      snapcraftctl set-version $(git -C ../src describe --tags  | sed 's/v//')
     build-packages:
       - build-essential
       - pkg-config
+      - curl
       - meson
       - cargo
       - libssl-dev
