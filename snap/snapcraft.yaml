@@ -1,5 +1,5 @@
 name: spot
-base: core20 # the base snap is the execution environment for this snap
+base: core22 # the base snap is the execution environment for this snap
 adopt-info: spot
 summary: Gtk/Rust native Spotify client for the GNOME desktop.
 description: |
@@ -19,7 +19,7 @@ parts:
     #source-tag: '0.1.12'
     override-pull: |
       set -eu
-      snapcraftctl pull
+      craftctl default
       last_committed_tag="$(git describe --tags --abbrev=0)"
       last_committed_tag_ver="$(echo ${last_committed_tag} | sed 's/v//')"
       last_released_tag="$(snap info $SNAPCRAFT_PROJECT_NAME | awk '$1 == "latest/beta:" { print $2 }')"
@@ -51,9 +51,9 @@ parts:
       #export DESTDIR=$SNAPCRAFT_PART_INSTALL
       curl https://sh.rustup.rs -sSf | sh -s -- -y
       . $HOME/.cargo/env
-      rustup toolchain install nightly
-      rustup default nightly
-      snapcraftctl build
+      rustup toolchain install stable
+      rustup default stable
+      craftctl default
 
 layout:
   /usr/share/spot/spot.gresource:
@@ -71,7 +71,7 @@ slots:
 apps:
   spot:
     command: usr/bin/spot
-    extensions: [gnome-3-38]
+    extensions: [gnome]
     common-id: dev.alextren.Spot
     plugs:
       - audio-playback
