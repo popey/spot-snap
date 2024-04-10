@@ -22,7 +22,7 @@ parts:
       craftctl default
       last_rev="$(git rev-list --tags --max-count=1)"
       last_committed_tag="$(git describe --tags $last_rev)"
-      last_released_tag="$(snap info $SNAPCRAFT_PROJECT_NAME | awk '$1 == "latest/beta:" { print $2 }')"
+      last_released_tag="$(snap info $CRAFT_PROJECT_NAME | awk '$1 == "latest/beta:" { print $2 }')"
       # If the latest tag from the upstream project has not been released to
       # beta, build that tag instead of master.
       if [ "${last_committed_tag}" != "${last_released_tag}" ]; then
@@ -43,12 +43,13 @@ parts:
       - libgtk-3-dev
       - libasound2-dev
       - libpulse-dev
+      - libgstreamer1.0-dev
     meson-parameters: [--prefix=/usr, -Dbuildtype=release, -Doffline=false]
     build-environment:
       - PATH: $HOME/.cargo/bin:$PATH
-      - PKG_CONFIG_PATH: $SNAPCRAFT_STAGE/usr/lib/pkgconfig:$PKG_CONFIG_PATH
+      - PKG_CONFIG_PATH: $CRAFT_STAGE/usr/lib/pkgconfig:$PKG_CONFIG_PATH
     override-build: |
-      #export DESTDIR=$SNAPCRAFT_PART_INSTALL
+      #export DESTDIR=$CRAFT_PART_INSTALL
       curl https://sh.rustup.rs -sSf | sh -s -- -y
       . $HOME/.cargo/env
       rustup toolchain install stable
