@@ -31,7 +31,7 @@ parts:
         cd ../src
         git checkout "${last_committed_tag}"
       fi
-      craftctl set-version $(git -C ../src describe --tags)
+      craftctl set version $(git -C ../src describe --tags)
     build-packages:
       - build-essential
       - pkg-config
