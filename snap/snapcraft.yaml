@@ -1,13 +1,17 @@
 name: spot
-base: core22 # the base snap is the execution environment for this snap
+base: core24
 adopt-info: spot
 summary: Gtk/Rust native Spotify client for the GNOME desktop.
 description: |
   Gtk/Rust native Spotify client for the GNOME desktop.
 
-architectures:
-  - build-on: amd64
-  - build-on: arm64
+platforms:
+  x86_64-linux-gnu:
+    build-for: amd64
+    build-on: amd64
+  aarch64-linux-gnu:
+    build-for: arm64
+    build-on: arm64
 
 grade: stable
 confinement: strict
@@ -16,7 +20,6 @@ parts:
   spot:
     plugin: meson
     source: https://github.com/xou816/spot.git
-    #source-tag: '0.1.12'
     override-pull: |
       set -eu
       craftctl default
@@ -40,10 +43,14 @@ parts:
       - cargo
       - libssl-dev
       - libglib2.0-dev-bin
-      - libgtk-3-dev
+      - libgtk-4-dev
+      - libadwaita-1-dev
       - libasound2-dev
       - libpulse-dev
       - libgstreamer1.0-dev
+      - libgstreamer-plugins-base1.0-dev
+      - libgirepository1.0-dev
+      - gobject-introspection
     meson-parameters: [--prefix=/usr, -Dbuildtype=release, -Doffline=false]
     build-environment:
       - PATH: $HOME/.cargo/bin:$PATH
