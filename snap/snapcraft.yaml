@@ -1,6 +1,6 @@
 name: spot
 base: core24
-version: 0.4.1
+version: 0.5.0
 summary: Gtk/Rust native Spotify client for the GNOME desktop.
 description: |
   Gtk/Rust native Spotify client for the GNOME desktop.
