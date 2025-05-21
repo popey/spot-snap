@@ -44,8 +44,10 @@ parts:
       #export DESTDIR=$CRAFT_PART_INSTALL
       curl https://sh.rustup.rs -sSf | sh -s -- -y
       . $HOME/.cargo/env
-      rustup toolchain install stable
-      rustup default stable
+      #rustup toolchain install stable
+      #rustup default stable
+      rustup toolchain install beta
+      rustup default beta
       craftctl default
 
 layout:
